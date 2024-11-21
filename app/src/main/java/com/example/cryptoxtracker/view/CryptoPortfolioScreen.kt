@@ -2,6 +2,9 @@ package com.example.cryptoxtracker.view
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavController
 import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
 import java.text.DecimalFormat
@@ -24,5 +27,26 @@ fun CryptoPortfolioScreen(
     viewModel: CryptoScreenViewModel = viewModel(),
     cryptoQuantitiesMap: Map<String, Double>
 ){
-    Text(cryptoQuantitiesMap.toString())
+    val coinListData by viewModel.coinListData.observeAsState()
+
+
+    /*when (coinListData) {
+        is Result.Success -> {
+            val data = (cryptoState as Result.Success).value
+            LazyColumn {
+                items(data) { crypto ->
+                    Text(text = crypto.name)
+                }
+            }
+        }
+        is Result.Failure -> {
+            val error = (cryptoState as Result.Failure).exceptionOrNull()?.message ?: "Unknown error"
+            Text(text = "Error: $error", color = Color.Red)
+        }
+        else -> {
+            Text(text = "Loading...")
+        }
+    }*/
+
+    Text(coinListData.toString())
 }
