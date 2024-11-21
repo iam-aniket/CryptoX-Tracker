@@ -59,6 +59,22 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.moshi:moshi:1.13.0")  // Latest version of Moshi
+    implementation("com.squareup.moshi:moshi-kotlin:1.13.0") // For Kotlin support
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("io.coil-kt:coil-compose:2.2.0")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
+
+    //implementation("com.github.PratikFagadiya:AnimatedSmoothBottomNavigation-JetpackCompose:1.1.2")
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
+
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
+    implementation("androidx.navigation:navigation-compose:2.8.2")
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
