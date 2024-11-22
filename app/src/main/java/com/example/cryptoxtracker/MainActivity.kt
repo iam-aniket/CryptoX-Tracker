@@ -38,19 +38,10 @@ class MainActivity : ComponentActivity() {
         //enableEdgeToEdge()
         setContent {
             MyAppTheme {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White)
-                ) {
+                Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
                     val navController = rememberNavController()
-
                     TopAppBarComposable(navController)
-                    CryptoPortfolioScreen(
-                        navController,
-                        CryptoScreenViewModel(),
-                        CryptoValues.cryptoQuantitiesMapFake
-                    )
+                    CryptoPortfolioScreen(navController, CryptoScreenViewModel(), CryptoValues.cryptoQuantitiesMapFake)
                 }
             }
         }
