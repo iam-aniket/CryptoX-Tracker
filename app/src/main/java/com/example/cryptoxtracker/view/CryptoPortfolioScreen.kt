@@ -72,9 +72,7 @@ fun CryptoPortfolioScreen(
     val coinListData by viewModel.coinListData.collectAsState()
     val isLoading = viewModel.isLoading
 
-
     if (isLoading.value) {
-        // Display a full-screen loader
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -104,7 +102,6 @@ fun CryptoPortfolioScreen(
                     Pair(crypto, percentage) // Create pair of crypto and percentage
                 }.sortedByDescending { it.second } // Sort by percentage in descending order
 
-
                 val totalHoldingsFormatted = formatWithCommasAndTwoDecimalPlaces(totalHoldings)
                 HoldingsPortfolioScreen(
                     navController,
@@ -114,7 +111,6 @@ fun CryptoPortfolioScreen(
                     cryptoWithPercentageList,
                     cryptoQuantitiesMap
                 )
-                Text("YYYoooooooooooooooooooooooooooooooooooooooooooooo")
             } else {
                 ErrorScreen()
             }
