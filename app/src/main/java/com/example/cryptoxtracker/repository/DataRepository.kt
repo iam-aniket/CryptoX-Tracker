@@ -2,9 +2,6 @@ package com.example.cryptoxtracker.repository
 
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.network.ApiService
-import com.example.cryptoxtracker.network.RetrofitClient
-import retrofit2.Response
-
 
 class DataRepository(private val apiService: ApiService) {
     private val APIKEY = "CG-cADMVJyJqucmmmNkLoPimPiL"

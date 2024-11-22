@@ -10,19 +10,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.network.RetrofitClient
 import com.example.cryptoxtracker.repository.DataRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CryptoScreenViewModel : ViewModel() {
 
     private val repository: DataRepository = DataRepository(RetrofitClient.apiService)
 
-    private val APIKEY = "CG-cADMVJyJqucmmmNkLoPimPiL"
-
     private val _isLoading = mutableStateOf(true)
     val isLoading: State<Boolean> = _isLoading
 
-    private val _coinListData = MutableLiveData<Result<List<CryptoCurrency>>>(Result.success(emptyList()))
-    val coinListData: LiveData<Result<List<CryptoCurrency>>> = _coinListData
+    private val _coinListData = MutableStateFlow<Result<List<CryptoCurrency>>>(Result.success(emptyList()))
+    val coinListData: StateFlow<Result<List<CryptoCurrency>>> = _coinListData
 
     init {
         fetchItems()
@@ -33,6 +33,7 @@ class CryptoScreenViewModel : ViewModel() {
             try{
                 val result = repository.getDataFromApi()
                 _coinListData.value = result
+                _isLoading.value = false
             } catch(ex : Exception){
                 Log.e("Exception", "Exception occurred $ex")
             }
