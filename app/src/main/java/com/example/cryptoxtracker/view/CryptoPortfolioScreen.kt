@@ -217,7 +217,6 @@ fun PortfolioItemRow(
             .clickable {
                 //navController.navigate(Routes.detailScreen)
             }
-            //0xFF1E1E1E
             .background(Color(0xFF1E1E1E), RoundedCornerShape(6.dp))
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -302,13 +301,7 @@ fun PortfolioItemRow(
 fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, investedValue: Double) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-//                    .border(
-//                        width = 1.dp,
-//                        color = Color.White,
-//                        shape = RoundedCornerShape(6.dp)
-//                    )
-        ,
+            .fillMaxWidth(),
         shape = RoundedCornerShape(6.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF292929)) // Dark grey background
     ) {
@@ -324,15 +317,12 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                 fontSize = 14.sp
             )
 
-            //Spacer(modifier = Modifier.height(4.dp))
-
             Row {
                 Text(text = "₹", color = Color.Gray, fontSize = 16.sp)
                 Text(
                     text = portfolioValue, // Portfolio Value
                     color = Color.White,
                     fontSize = 16.sp,
-                    //fontWeight = FontWeight.Bold
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -351,14 +341,12 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                         color = Color.Gray,
                         fontSize = 12.sp
                     )
-                    //Spacer(modifier = Modifier.height(4.dp))
                     Row {
                         Text(text = "₹", color = Color.Gray, fontSize = 14.sp)
                         Text(
                             text = formatWithCommasAndTwoDecimalPlaces(investedValue), // Invested Value
                             color = Color.White,
                             fontSize = 14.sp,
-                            //fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -371,13 +359,11 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                     val returns = totalHoldingDouble - investedValue
                     val returnsPercentage = (returns/investedValue) * 100
                     val returnsColor = if (returns >= 0) Color(0xFF3db284) else Color.Red
-                    //Spacer(modifier = Modifier.height(4.dp))
                     Row {
                         Text(
                             text = "₹${formatWithCommasAndTwoDecimalPlaces(returns)} ", // Returns
                             color = returnsColor, // Green for positive returns
                             fontSize = 14.sp,
-                            //fontWeight = FontWeight.Bold
                         )
                         Text(text = " (${formatWithTwoDecimalPlaces(returnsPercentage)}%)", color = returnsColor, fontSize = 12.sp)
                     }
@@ -396,7 +382,6 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F1F1F)),
                 shape = RoundedCornerShape(6.dp),
 
-                //modifier = Modifier.align(Alignment.CenterHorizontally)
                 modifier = Modifier
                     .fillMaxWidth() // Makes the button stretch across the width
                     .height(50.dp)  // Adjust height to match the design
