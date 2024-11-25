@@ -3,11 +3,9 @@ package com.example.cryptoxtracker
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
@@ -22,15 +20,14 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.cryptoxtracker.model.CryptoValues
-import com.example.cryptoxtracker.ui.theme.CryptoXTrackerTheme
+import com.example.cryptoxtracker.repository.DataStoreManager
 import com.example.cryptoxtracker.ui.theme.MyAppTheme
 import com.example.cryptoxtracker.view.CryptoPortfolioScreen
 import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +37,11 @@ class MainActivity : ComponentActivity() {
             MyAppTheme {
                 Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
                     val navController = rememberNavController()
-                    TopAppBarComposable(navController)
-                    CryptoPortfolioScreen(navController, CryptoScreenViewModel(), CryptoValues.cryptoQuantitiesMapFake)
+
+                    //Added Top App bar in Crypto Portfolio Screen Itself - So removed here
+                    //TopAppBarComposable(navController)
+
+                    CryptoPortfolioScreen(navController, CryptoScreenViewModel(DataStoreManager(applicationContext)))//, CryptoValues.cryptoQuantitiesMapFake)
                 }
             }
         }

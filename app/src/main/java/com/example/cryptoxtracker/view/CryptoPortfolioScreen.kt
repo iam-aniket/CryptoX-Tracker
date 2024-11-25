@@ -1,6 +1,6 @@
 package com.example.cryptoxtracker.view
 
-import android.graphics.Paint.Align
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,39 +19,51 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
-import java.text.DecimalFormat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.model.CryptoValues
-import java.text.NumberFormat
-import java.util.Locale
+import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
+import java.text.DecimalFormat
 
 fun formatWithCommasAndTwoDecimalPlaces(value: Double): String {
     val decimalFormat = DecimalFormat("#,##,##0.00")
@@ -63,12 +75,17 @@ fun formatWithTwoDecimalPlaces(value: Double): String {
     return decimalFormat.format(value)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CryptoPortfolioScreen(
     navController: NavController,
     viewModel: CryptoScreenViewModel = viewModel(),
-    cryptoQuantitiesMap: Map<String, Double>
 ) {
+    val coinQuantityList by viewModel.coinQuantityList.collectAsState(initial = CryptoValues.cryptoQuantitiesMapFake)
+    val editableCoinQuantityList =
+        remember(coinQuantityList) { coinQuantityList.toMutableMap() } // Initialize properly
+    var editMode by remember { mutableStateOf(false) }
+
     val coinListData by viewModel.coinListData.collectAsState()
     val isLoading = viewModel.isLoading
 
@@ -83,16 +100,61 @@ fun CryptoPortfolioScreen(
         }
     } else {
         if (coinListData.isSuccess) {
+            TopAppBar(
+                modifier = Modifier.background(Color.Black),
+                title = {
+                    Text(text = "CryptoX Tracker", color = Color.White, fontSize = 20.sp)
+                },
+                navigationIcon = {
+                    IconButton(onClick = {/* TODO: Implement Onclick */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,  // Placeholder icon for app icon
+                            contentDescription = "App Icon",
+                            tint = Color.White
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = {/* TODO: Implement Onclick */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,  // Placeholder icon
+                            contentDescription = "Search Icon",
+                            tint = Color.White
+                        )
+                    }
+                    IconButton(onClick = {/* TODO: Implement Onclick */ }) {
+                        Icon(
+                            imageVector = Icons.Default.Person,  // Placeholder icon
+                            contentDescription = "Profile Icon",
+                            tint = Color.White
+                        )
+                    }
+                    IconButton(onClick = {
+                        editMode = !editMode
+                        if (!editMode) {
+                            // Save changes and exit edit mode
+                            viewModel.updateCoinDetails(editableCoinQuantityList)
+                        }
+                    }) {
+                        Icon(
+                            imageVector = if (editMode) Icons.Default.Done else Icons.Default.Edit,
+                            contentDescription = if (editMode) "Save Changes" else "Edit",
+                            tint = Color.White
+                        )
+                    }
+                },
+            )
+
             val data = coinListData.getOrNull()
             if (!data.isNullOrEmpty()) {
 
                 val totalHoldings = data.sumOf { crypto ->
-                    val quantity = cryptoQuantitiesMap[crypto.id] ?: 0.0
+                    val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
                     crypto.currentPrice * quantity
                 } ?: 0.0
-
+                Log.e("UI","$editableCoinQuantityList")
                 val cryptoWithPercentageList = data.map { crypto ->
-                    val quantity = cryptoQuantitiesMap[crypto.id] ?: 0.0
+                    val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
                     val cryptoHoldingValue = crypto.currentPrice * quantity
                     val percentage = if (totalHoldings > 0) {
                         (cryptoHoldingValue / totalHoldings) * 100
@@ -108,8 +170,9 @@ fun CryptoPortfolioScreen(
                     totalHoldingsFormatted,
                     totalHoldings,
                     4500000.09,
+                    editableCoinQuantityList,
                     cryptoWithPercentageList,
-                    cryptoQuantitiesMap
+                    editMode
                 )
             } else {
                 ErrorScreen()
@@ -144,8 +207,9 @@ fun HoldingsPortfolioScreen(
     totalHoldings: String,
     totalHoldingDouble: Double,
     investedValue: Double,
+    editableCoinDetails: MutableMap<String, Double>,
     cryptoList: List<Pair<CryptoCurrency, Double>>,
-    cryptoQuantitiesMapPassed: Map<String, Double>
+    editMode: Boolean
 ) {
 
     Column(
@@ -166,20 +230,26 @@ fun HoldingsPortfolioScreen(
                 TableHeader()
             }
 
+
             items(cryptoList) { (crypto, percentage) ->
-                val qtity = cryptoQuantitiesMapPassed[crypto.id] ?: 0.0
+                val qtity = editableCoinDetails[crypto.id] ?: 0.0
                 val cryptoHoldingValue = crypto.currentPrice * qtity
                 PortfolioItemRow(
                     navController = navController,
                     crypto = crypto,
                     percentage = percentage,
                     qtity,
-                    cryptoHoldingValue
+                    onValueChange = { newValue ->
+                        editableCoinDetails[crypto.id] = newValue
+                    },
+                    cryptoHoldingValue,
+                    editMode
                 )
             }
         }
     }
 }
+
 @Composable
 fun TableHeader() {
     Row(
@@ -204,9 +274,13 @@ fun PortfolioItemRow(
     navController: NavController,
     crypto: CryptoCurrency,
     percentage: Double,
-    qtity: Double,
-    cryptoHoldingValue: Double
+    initialValue: Double,
+    onValueChange: (Double) -> Unit,
+    cryptoHoldingValue: Double,
+    isEditMode: Boolean,
 ) {
+    var valueText by remember { mutableStateOf(initialValue.toString()) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -231,11 +305,6 @@ fun PortfolioItemRow(
                     .border(2.dp, Color.Gray, CircleShape),
                 contentScale = ContentScale.Crop
             )
-            /*Image(
-                painter = painterResource(id = item.iconResId),
-                contentDescription = item.name,
-                modifier = Modifier.size(32.dp)
-            )*/
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(
@@ -243,11 +312,37 @@ fun PortfolioItemRow(
                     fontSize = 14.sp,
                     color = Color.White
                 )
-                Text(
-                    text = "$qtity",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
+                if (isEditMode) {
+                    TextField(
+                        value = valueText,
+                        onValueChange = { newText ->
+                            valueText = newText
+                            val newValue = newText.toDoubleOrNull()
+                            if (newValue != null) {
+                                onValueChange(newValue)
+                            }
+                        },
+                        modifier = Modifier
+                            .height(45.dp) // Reduced height
+                            .background(Color(0xFF292929), shape = RoundedCornerShape(4.dp)),
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
+                        colors = TextFieldDefaults.colors(unfocusedContainerColor = Color(0xFFFFFFFF),
+                            focusedContainerColor = Color(0xFFFFFFFF),
+                            unfocusedIndicatorColor = Color(0xFF292929),
+                            focusedIndicatorColor = Color.Gray,
+                            cursorColor = Color.Gray,
+                            focusedTextColor = Color.Black
+                        ),
+                        singleLine = true
+                    )
+                } else {
+                    Text(
+                        text = "$initialValue",
+                        fontSize = 12.sp,
+                        color = Color.Gray
+                    )
+                }
                 Text(
                     text = "${formatWithTwoDecimalPlaces(percentage)}%",
                     fontSize = 12.sp,
@@ -275,7 +370,7 @@ fun PortfolioItemRow(
                     fontSize = 14.sp,
                 )
             }
-            Row{
+            Row {
                 Text(text = "24H: ", fontSize = 12.sp, color = Color.Gray)
                 Text(
                     text =  "₹${formatWithCommasAndTwoDecimalPlaces(crypto.priceChange24h)} " + "(${formatWithTwoDecimalPlaces(crypto.priceChangePercentage24h)}%)",
@@ -353,7 +448,7 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                         fontSize = 12.sp
                     )
                     val returns = totalHoldingDouble - investedValue
-                    val returnsPercentage = (returns/investedValue) * 100
+                    val returnsPercentage = (returns / investedValue) * 100
                     val returnsColor = if (returns >= 0) Color(0xFF3db284) else Color.Red
                     Row {
                         Text(
@@ -365,7 +460,6 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                     }
                 }
             }
-
         }
         Column(
             modifier = Modifier

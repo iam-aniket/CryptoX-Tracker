@@ -1,5 +1,6 @@
 package com.example.cryptoxtracker.repository
 
+import android.util.Log
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.network.ApiService
 
@@ -19,7 +20,10 @@ class DataRepository(private val apiService: ApiService) {
                 "24h",
                 "3"
             )
+            Log.e("XYZ","API CALL....................................")
+
             if (response.isSuccessful) {
+                Log.e("XYZ","SUCCESS....................................")
                 val body = response.body()
                 if (body != null) {
                     Result.success(body)
@@ -27,6 +31,7 @@ class DataRepository(private val apiService: ApiService) {
                     Result.failure(Exception("Response body is null"))
                 }
             } else {
+                Log.e("XYZ","FAILURE....................................")
                 Result.failure(Exception("HTTP ${response.code()}: ${response.message()}"))
             }
         } catch (e: Exception) {

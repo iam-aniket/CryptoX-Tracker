@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.example.cryptoxtracker"
         minSdk = 29
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -74,7 +74,8 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime-livedata:1.7.3")
     implementation("androidx.navigation:navigation-compose:2.8.2")
-    
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

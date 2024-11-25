@@ -1,7 +1,7 @@
 package com.example.cryptoxtracker.model
 
 object CryptoValues {
-    val cryptoQuantitiesMapFake: Map<String, Double> = mapOf(
+    val cryptoQuantitiesMapFake: MutableMap<String, Double> = mutableMapOf(
         "bitcoin" to 1.00,
         "ethereum" to 2.00,
         "tether" to 3.00,
