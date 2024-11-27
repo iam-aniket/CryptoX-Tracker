@@ -21,7 +21,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
@@ -38,6 +40,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -89,6 +92,12 @@ fun CryptoPortfolioScreen(
     val coinListData by viewModel.coinListData.collectAsState()
     val isLoading = viewModel.isLoading
 
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val filteredCoins by viewModel.filteredCoinList.collectAsState()
+
+    // State to toggle search mode
+    var isSearchMode by remember { mutableStateOf(false) }
+
     if (isLoading.value) {
         Box(
             modifier = Modifier
@@ -99,13 +108,46 @@ fun CryptoPortfolioScreen(
             CircularProgressIndicator(color = Color.White)
         }
     } else {
-        if (coinListData.isSuccess) {
+        if (filteredCoins.isSuccess) {
             TopAppBar(
                 modifier = Modifier.background(Color.Black),
                 title = {
-                    Text(text = "CryptoX Tracker", color = Color.White, fontSize = 20.sp)
+                    if (isSearchMode) {
+                        Text(text = "CxT", color = Color.White, fontSize = 20.sp)
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { viewModel.updateSearchQuery(it) },
+                            placeholder = { Text("Search Cryptocurrency") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color.White, shape = RoundedCornerShape(8.dp))
+                                .padding(horizontal = 8.dp),
+                            singleLine = true,
+                            colors = TextFieldDefaults.textFieldColors(
+                                containerColor = Color.Transparent,
+                                cursorColor = Color.Black,
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
+                            )
+                        )
+                    } else {
+                        Text(text = "CryptoX Tracker", color = Color.White, fontSize = 20.sp)
+                    }
                 },
                 navigationIcon = {
+                    if (isSearchMode) {
+                        IconButton(onClick = {
+                            isSearchMode = false
+                            viewModel.updateSearchQuery("")
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                tint = Color.White
+                            )
+                        }
+                    }
+                    else
                     IconButton(onClick = {/* TODO: Implement Onclick */ }) {
                         Icon(
                             imageVector = Icons.Default.Menu,  // Placeholder icon for app icon
@@ -115,12 +157,14 @@ fun CryptoPortfolioScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {/* TODO: Implement Onclick */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Search,  // Placeholder icon
-                            contentDescription = "Search Icon",
-                            tint = Color.White
-                        )
+                    if (!isSearchMode) {
+                        IconButton(onClick = { isSearchMode = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = Color.White
+                            )
+                        }
                     }
                     IconButton(onClick = {/* TODO: Implement Onclick */ }) {
                         Icon(
@@ -145,14 +189,14 @@ fun CryptoPortfolioScreen(
                 },
             )
 
-            val data = coinListData.getOrNull()
+            val data = filteredCoins.getOrNull()
             if (!data.isNullOrEmpty()) {
 
                 val totalHoldings = data.sumOf { crypto ->
                     val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
                     crypto.currentPrice * quantity
                 } ?: 0.0
-                Log.e("UI","$editableCoinQuantityList")
+                Log.e("UI", "$editableCoinQuantityList")
                 val cryptoWithPercentageList = data.map { crypto ->
                     val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
                     val cryptoHoldingValue = crypto.currentPrice * quantity
@@ -177,8 +221,8 @@ fun CryptoPortfolioScreen(
             } else {
                 ErrorScreen()
             }
-        } else if (coinListData.isFailure) {
-            val error = coinListData.exceptionOrNull()?.message ?: "Unknown error"
+        } else if (filteredCoins.isFailure) {
+            val error = filteredCoins.exceptionOrNull()?.message ?: "Unknown error"
             Text(text = "Error: $error", color = Color.Red)
         }
     }
@@ -327,7 +371,8 @@ fun PortfolioItemRow(
                             .background(Color(0xFF292929), shape = RoundedCornerShape(4.dp)),
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                         textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
-                        colors = TextFieldDefaults.colors(unfocusedContainerColor = Color(0xFFFFFFFF),
+                        colors = TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color(0xFFFFFFFF),
                             focusedContainerColor = Color(0xFFFFFFFF),
                             unfocusedIndicatorColor = Color(0xFF292929),
                             focusedIndicatorColor = Color.Gray,
@@ -373,7 +418,11 @@ fun PortfolioItemRow(
             Row {
                 Text(text = "24H: ", fontSize = 12.sp, color = Color.Gray)
                 Text(
-                    text =  "₹${formatWithCommasAndTwoDecimalPlaces(crypto.priceChange24h)} " + "(${formatWithTwoDecimalPlaces(crypto.priceChangePercentage24h)}%)",
+                    text = "₹${formatWithCommasAndTwoDecimalPlaces(crypto.priceChange24h)} " + "(${
+                        formatWithTwoDecimalPlaces(
+                            crypto.priceChangePercentage24h
+                        )
+                    }%)",
                     fontSize = 12.sp,
                     fontFamily = FontFamily.SansSerif,
                     color = priceChangeColor
@@ -456,7 +505,11 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                             color = returnsColor, // Green for positive returns
                             fontSize = 14.sp,
                         )
-                        Text(text = " (${formatWithTwoDecimalPlaces(returnsPercentage)}%)", color = returnsColor, fontSize = 12.sp)
+                        Text(
+                            text = " (${formatWithTwoDecimalPlaces(returnsPercentage)}%)",
+                            color = returnsColor,
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }
