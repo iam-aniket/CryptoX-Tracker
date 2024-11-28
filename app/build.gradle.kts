@@ -69,8 +69,8 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.0")
     implementation("androidx.navigation:navigation-compose:2.8.3")
 
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0") //Pull to refresh
-
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.32.0") //Pull to refresh -> Deprecated
+    implementation("androidx.compose.foundation:foundation:1.5.0") // Adjust the version as needed
 
     //implementation("com.github.PratikFagadiya:AnimatedSmoothBottomNavigation-JetpackCompose:1.1.2")
     implementation("com.airbnb.android:lottie-compose:6.0.0")

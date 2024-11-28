@@ -24,8 +24,15 @@ class CryptoScreenViewModel(private val repository1: DataStoreManager) : ViewMod
 
     private val repository: DataRepository = DataRepository(RetrofitClient.apiService)
 
-    private val _isLoading = mutableStateOf(true)
-    val isLoading: State<Boolean> = _isLoading
+    private val _isLoading = MutableStateFlow(true) // Mutable internal state
+    val isLoading: StateFlow<Boolean> = _isLoading // Expose as an immutable state
+
+    private val _isPortfolioVisible = mutableStateOf(true)
+    val isPortfolioVisible: State<Boolean> = _isPortfolioVisible
+
+    fun togglePortfolioVisibility() {
+        _isPortfolioVisible.value = !_isPortfolioVisible.value
+    }
 
     private val _coinListData =
         MutableStateFlow<Result<List<CryptoCurrency>>>(Result.success(emptyList()))

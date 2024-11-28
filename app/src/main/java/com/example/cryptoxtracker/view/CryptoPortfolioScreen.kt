@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
@@ -54,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
@@ -63,9 +65,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.cryptoxtracker.R
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.model.CryptoValues
 import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import java.text.DecimalFormat
 
 fun formatWithCommasAndTwoDecimalPlaces(value: Double): String {
@@ -90,7 +95,7 @@ fun CryptoPortfolioScreen(
     var editMode by remember { mutableStateOf(false) }
 
     val coinListData by viewModel.coinListData.collectAsState()
-    val isLoading = viewModel.isLoading
+    val isLoading by viewModel.isLoading.collectAsState()
 
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filteredCoins by viewModel.filteredCoinList.collectAsState()
@@ -98,7 +103,7 @@ fun CryptoPortfolioScreen(
     // State to toggle search mode
     var isSearchMode by remember { mutableStateOf(false) }
 
-    if (isLoading.value) {
+    if (isLoading) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -169,12 +174,13 @@ fun CryptoPortfolioScreen(
                             )
                         }
                     }
-                    IconButton(onClick = {/* TODO: Implement Onclick */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,  // Placeholder icon
-                            contentDescription = "Profile Icon",
-                            tint = Color.White
-                        )
+                    IconButton(onClick = { viewModel.togglePortfolioVisibility() }) {
+                        val visibilityIcon = if (viewModel.isPortfolioVisible.value) {
+                            painterResource(id = R.drawable.visibleeye30) // Eye icon
+                        } else {
+                            painterResource(id = R.drawable.closedeye50) // Eye-off icon
+                        }
+                        Icon(visibilityIcon, contentDescription = "Toggle Visibility", tint = Color.White)
                     }
                     IconButton(onClick = {
                         editMode = !editMode
@@ -219,7 +225,9 @@ fun CryptoPortfolioScreen(
                     4500000.09,
                     editableCoinQuantityList,
                     cryptoWithPercentageList,
-                    editMode
+                    editMode,
+                    isLoading,
+                    viewModel
                 )
             } else {
                 ErrorScreen()
@@ -256,9 +264,22 @@ fun HoldingsPortfolioScreen(
     investedValue: Double,
     editableCoinDetails: MutableMap<String, Double>,
     cryptoList: List<Pair<CryptoCurrency, Double>>,
-    editMode: Boolean
+    editMode: Boolean,
+    isLoading : Boolean,
+    viewModel: CryptoScreenViewModel
 ) {
 
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+    /*SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = {
+            viewModel.fetchItems() // Trigger data reload
+        }
+    ){
+
+    }
+*/
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -290,7 +311,8 @@ fun HoldingsPortfolioScreen(
                         editableCoinDetails[crypto.id] = newValue
                     },
                     cryptoHoldingValue,
-                    editMode
+                    editMode,
+                    viewModel
                 )
             }
         }
@@ -325,8 +347,15 @@ fun PortfolioItemRow(
     onValueChange: (Double) -> Unit,
     cryptoHoldingValue: Double,
     isEditMode: Boolean,
+    viewModel: CryptoScreenViewModel
 ) {
     var valueText by remember { mutableStateOf(initialValue.toString()) }
+
+    val displayCryptoQuantity = if (viewModel.isPortfolioVisible.value) {
+        initialValue
+    } else {
+        "**"
+    }
 
     Row(
         modifier = Modifier
@@ -386,7 +415,7 @@ fun PortfolioItemRow(
                     )
                 } else {
                     Text(
-                        text = "$initialValue",
+                        text = "$displayCryptoQuantity",
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
@@ -405,6 +434,12 @@ fun PortfolioItemRow(
             Color(0xFFF44336)
         }
 
+        val displayCryptoHoldingValue = if (viewModel.isPortfolioVisible.value) {
+            formatWithCommasAndTwoDecimalPlaces(cryptoHoldingValue)
+        } else {
+            "** ** ** ***"
+        }
+
         // Value and Returns Column
         Column(
             horizontalAlignment = Alignment.End,
@@ -413,7 +448,7 @@ fun PortfolioItemRow(
             Row {
                 Text(text = "₹", color = Color.Gray, fontSize = 14.sp)
                 Text(
-                    text = formatWithCommasAndTwoDecimalPlaces(cryptoHoldingValue), // Portfolio Value
+                    text = displayCryptoHoldingValue, // Portfolio Value
                     color = Color.White,
                     fontSize = 14.sp,
                 )
