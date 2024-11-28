@@ -113,23 +113,27 @@ fun CryptoPortfolioScreen(
                 modifier = Modifier.background(Color.Black),
                 title = {
                     if (isSearchMode) {
-                        Text(text = "CxT", color = Color.White, fontSize = 20.sp)
-                        TextField(
-                            value = searchQuery,
-                            onValueChange = { viewModel.updateSearchQuery(it) },
-                            placeholder = { Text("Search Cryptocurrency") },
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color.White, shape = RoundedCornerShape(8.dp))
-                                .padding(horizontal = 8.dp),
-                            singleLine = true,
-                            colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.Transparent,
-                                cursorColor = Color.Black,
-                                focusedTextColor = Color.Black,
-                                unfocusedTextColor = Color.Black
+                                .padding(horizontal = 4.dp, vertical = 8.dp)
+                        ) {
+                            TextField(
+                                value = searchQuery,
+                                onValueChange = { viewModel.updateSearchQuery(it) },
+                                placeholder = { Text("Search...") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color.White, shape = RoundedCornerShape(24.dp)),
+                                singleLine = true,
+                                colors = TextFieldDefaults.textFieldColors(
+                                    containerColor = Color.Transparent,
+                                    cursorColor = Color.Black,
+                                    focusedTextColor = Color.Black,
+                                    unfocusedTextColor = Color.Black
+                                )
                             )
-                        )
+                        }
                     } else {
                         Text(text = "CryptoX Tracker", color = Color.White, fontSize = 20.sp)
                     }
@@ -146,15 +150,14 @@ fun CryptoPortfolioScreen(
                                 tint = Color.White
                             )
                         }
-                    }
-                    else
-                    IconButton(onClick = {/* TODO: Implement Onclick */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,  // Placeholder icon for app icon
-                            contentDescription = "App Icon",
-                            tint = Color.White
-                        )
-                    }
+                    } else
+                        IconButton(onClick = {/* TODO: Implement Onclick */ }) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,  // Placeholder icon for app icon
+                                contentDescription = "App Icon",
+                                tint = Color.White
+                            )
+                        }
                 },
                 actions = {
                     if (!isSearchMode) {
