@@ -176,11 +176,11 @@ fun CryptoPortfolioScreen(
                     }
                     IconButton(onClick = { viewModel.togglePortfolioVisibility() }) {
                         val visibilityIcon = if (viewModel.isPortfolioVisible.value) {
-                            painterResource(id = R.drawable.visibleeye30) // Eye icon
+                            painterResource(id = R.drawable.eye_visible__1_) // Eye icon
                         } else {
-                            painterResource(id = R.drawable.closedeye50) // Eye-off icon
+                            painterResource(id = R.drawable.eye_closed__1_) // Eye-off icon
                         }
-                        Icon(visibilityIcon, contentDescription = "Toggle Visibility", tint = Color.White)
+                        Icon(visibilityIcon, contentDescription = "Toggle Visibility", tint = Color.White, modifier = Modifier.size(24.dp))
                     }
                     IconButton(onClick = {
                         editMode = !editMode
