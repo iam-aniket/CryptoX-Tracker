@@ -22,13 +22,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,9 +36,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -56,7 +53,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -69,8 +65,6 @@ import com.example.cryptoxtracker.R
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.model.CryptoValues
 import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import java.text.DecimalFormat
 
 fun formatWithCommasAndTwoDecimalPlaces(value: Double): String {
@@ -126,16 +120,35 @@ fun CryptoPortfolioScreen(
                             TextField(
                                 value = searchQuery,
                                 onValueChange = { viewModel.updateSearchQuery(it) },
-                                placeholder = { Text("Search...") },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.White, shape = RoundedCornerShape(24.dp)),
+                                placeholder = {
+                                    Text(
+                                        text = "Search ETH 🔥",
+                                        color = Color.White.copy(alpha = 0.7f),
+                                        fontSize = 14.sp
+                                    )
+                                },
                                 singleLine = true,
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = "Search Icon",
+                                        tint = Color.White
+                                    )
+                                },
+                                modifier = Modifier
+                                    //.weight(1f)
+                                    .background(Color(0xFF424242), RoundedCornerShape(20.dp)),
                                 colors = TextFieldDefaults.textFieldColors(
                                     containerColor = Color.Transparent,
-                                    cursorColor = Color.Black,
-                                    focusedTextColor = Color.Black,
-                                    unfocusedTextColor = Color.Black
+                                    focusedTextColor = Color.White,
+                                    unfocusedTextColor = Color.White,
+                                    cursorColor = Color.White,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent
+                                ),
+                                textStyle = LocalTextStyle.current.copy(
+                                    fontSize = 14.sp, // Match font size to placeholder
+                                    color = Color.White
                                 )
                             )
                         }
@@ -173,14 +186,14 @@ fun CryptoPortfolioScreen(
                                 tint = Color.White
                             )
                         }
-                    }
-                    IconButton(onClick = { viewModel.togglePortfolioVisibility() }) {
-                        val visibilityIcon = if (viewModel.isPortfolioVisible.value) {
-                            painterResource(id = R.drawable.eye_visible__1_) // Eye icon
-                        } else {
-                            painterResource(id = R.drawable.eye_closed__1_) // Eye-off icon
+                        IconButton(onClick = { viewModel.togglePortfolioVisibility() }) {
+                            val visibilityIcon = if (viewModel.isPortfolioVisible.value) {
+                                painterResource(id = R.drawable.eye_visible__1_) // Eye icon
+                            } else {
+                                painterResource(id = R.drawable.eye_closed__1_) // Eye-off icon
+                            }
+                            Icon(visibilityIcon, contentDescription = "Toggle Visibility", tint = Color.White, modifier = Modifier.size(24.dp))
                         }
-                        Icon(visibilityIcon, contentDescription = "Toggle Visibility", tint = Color.White, modifier = Modifier.size(24.dp))
                     }
                     IconButton(onClick = {
                         editMode = !editMode
@@ -268,18 +281,6 @@ fun HoldingsPortfolioScreen(
     isLoading : Boolean,
     viewModel: CryptoScreenViewModel
 ) {
-
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
-
-    /*SwipeRefresh(
-        state = swipeRefreshState,
-        onRefresh = {
-            viewModel.fetchItems() // Trigger data reload
-        }
-    ){
-
-    }
-*/
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -338,6 +339,7 @@ fun TableHeader() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortfolioItemRow(
     navController: NavController,
@@ -399,20 +401,24 @@ fun PortfolioItemRow(
                             }
                         },
                         modifier = Modifier
-                            .height(45.dp) // Reduced height
-                            .background(Color(0xFF292929), shape = RoundedCornerShape(4.dp)),
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        textStyle = TextStyle(color = Color.Gray, fontSize = 14.sp),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color(0xFFFFFFFF),
-                            focusedContainerColor = Color(0xFFFFFFFF),
-                            unfocusedIndicatorColor = Color(0xFF292929),
-                            focusedIndicatorColor = Color.Gray,
-                            cursorColor = Color.Gray,
-                            focusedTextColor = Color.Black
+                            .align(Alignment.CenterHorizontally)
+                            .border(2.dp, Color(0xFFF44336), RoundedCornerShape(10.dp))
+                            .background(Color(0xFF424242), RoundedCornerShape(10.dp)),
+                        colors = TextFieldDefaults.textFieldColors(
+                            containerColor = Color.Transparent,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            cursorColor = Color.White,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
                         ),
-                        singleLine = true
-                    )
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 14.sp, // Match font size to placeholder
+                            color = Color.White
+                        ),
+                        singleLine = true,
+                        )
                 } else {
                     Text(
                         text = "$displayCryptoQuantity",
@@ -536,7 +542,7 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                     )
                     val returns = totalHoldingDouble - investedValue
                     val returnsPercentage = (returns / investedValue) * 100
-                    val returnsColor = if (returns >= 0) Color(0xFF3db284) else Color.Red
+                    val returnsColor = if (returns >= 0) Color(0xFF3db284) else Color(0xFFF44336)
                     Row {
                         Text(
                             text = "₹${formatWithCommasAndTwoDecimalPlaces(returns)} ", // Returns
@@ -583,6 +589,5 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
         }
     }
 }
-
 
 

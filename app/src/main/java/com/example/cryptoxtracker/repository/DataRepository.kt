@@ -7,7 +7,7 @@ import com.example.cryptoxtracker.network.ApiService
 class DataRepository(private val apiService: ApiService) {
     private val APIKEY = "CG-cADMVJyJqucmmmNkLoPimPiL"
     //28 coins
-    private val coinListStrings = "bitcoin,aptos,avalanche-2,arbitrum,dogecoin,polygon-ecosystem-token,polkadot,fetch-ai,chainlink,near,pepe,tether,floki,dogwifcoin,book-of-meme,tron,ecash,1inch,binancecoin,harmony,solana,bittorrent,ethereum,cosmos,optimism,render-token,jupiter-exchange-solana,worldcoin-wld"
+    private val coinListStrings = "bitcoin,aptos,avalanche-2,arbitrum,dogecoin,polygon-ecosystem-token,polkadot,fetch-ai,chainlink,near,pepe,tether,floki,dogwifcoin,book-of-meme,tron,ecash,1inch,binancecoin,harmony,solana,bittorrent,ethereum,brett,cats-2,cardano,cosmos,optimism,render-token,jupiter,worldcoin-wld,kaspa,ondo-finance,we-love-t,gigachad-2"
 
     suspend fun getDataFromApi(): Result<List<CryptoCurrency>> {
         return try {
