@@ -68,5 +68,5 @@ object CryptoValues {
         "ondo-finance" to 100.0,
         "we-love-t" to 61.5029,
         "gigachad-2" to 452.687
-        )
+    )
 }

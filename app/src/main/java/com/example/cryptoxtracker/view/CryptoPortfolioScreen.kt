@@ -83,7 +83,7 @@ fun CryptoPortfolioScreen(
     navController: NavController,
     viewModel: CryptoScreenViewModel = viewModel(),
 ) {
-    val coinQuantityList by viewModel.coinQuantityList.collectAsState(initial = CryptoValues.cryptoQuantitiesMapFake)
+    val coinQuantityList by viewModel.coinQuantityList.collectAsState(initial = CryptoValues.cryptoQuantitiesMap)
     val editableCoinQuantityList =
         remember(coinQuantityList) { coinQuantityList.toMutableMap() } // Initialize properly
     var editMode by remember { mutableStateOf(false) }
