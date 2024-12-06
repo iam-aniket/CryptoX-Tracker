@@ -22,10 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cryptoxtracker.repository.DataStoreManager
 import com.example.cryptoxtracker.ui.theme.MyAppTheme
+import com.example.cryptoxtracker.view.CoinDetailsScreen
 import com.example.cryptoxtracker.view.CryptoPortfolioScreen
+import com.example.cryptoxtracker.viewmodel.CoinDetailsViewModel
 import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
 
 
@@ -38,10 +42,15 @@ class MainActivity : ComponentActivity() {
                 Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
                     val navController = rememberNavController()
 
-                    //Added Top App bar in Crypto Portfolio Screen Itself - So removed here
-                    //TopAppBarComposable(navController)
-
-                    CryptoPortfolioScreen(navController, CryptoScreenViewModel(DataStoreManager(applicationContext)))//, CryptoValues.cryptoQuantitiesMapFake)
+                    NavHost(navController,Routes.homeScreen, builder = {
+                        composable(Routes.homeScreen) {
+                            CryptoPortfolioScreen(navController, CryptoScreenViewModel(DataStoreManager(applicationContext)))//, CryptoValues.cryptoQuantitiesMapFake)
+                        }
+                        composable (Routes.detailScreen){
+                            CoinDetailsScreen(navController)
+                            //CoinDetailsScreen(CoinDetailsViewModel())
+                        }
+                    })
                 }
             }
         }

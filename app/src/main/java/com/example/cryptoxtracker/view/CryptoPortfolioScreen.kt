@@ -37,6 +37,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -62,6 +63,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.cryptoxtracker.R
+import com.example.cryptoxtracker.Routes
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.model.CryptoValues
 import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
@@ -108,142 +110,167 @@ fun CryptoPortfolioScreen(
         }
     } else {
         if (filteredCoins.isSuccess) {
-            TopAppBar(
-                modifier = Modifier.background(Color.Black),
-                title = {
-                    if (isSearchMode) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 4.dp, vertical = 8.dp)
-                        ) {
-                            TextField(
-                                value = searchQuery,
-                                onValueChange = { viewModel.updateSearchQuery(it) },
-                                placeholder = {
-                                    Text(
-                                        text = "Search ETH 🔥",
-                                        color = Color.White.copy(alpha = 0.7f),
-                                        fontSize = 14.sp
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        modifier = Modifier.background(Color.Black),
+                        title = {
+                            if (isSearchMode) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 4.dp, vertical = 8.dp)
+                                ) {
+                                    TextField(
+                                        value = searchQuery,
+                                        onValueChange = { viewModel.updateSearchQuery(it) },
+                                        placeholder = {
+                                            Text(
+                                                text = "Search ETH 🔥",
+                                                color = Color.White.copy(alpha = 0.7f),
+                                                fontSize = 14.sp
+                                            )
+                                        },
+                                        singleLine = true,
+                                        leadingIcon = {
+                                            Icon(
+                                                imageVector = Icons.Default.Search,
+                                                contentDescription = "Search Icon",
+                                                tint = Color.White
+                                            )
+                                        },
+                                        modifier = Modifier
+                                            //.weight(1f)
+                                            .background(
+                                                Color(0xFF424242),
+                                                RoundedCornerShape(20.dp)
+                                            ),
+                                        colors = TextFieldDefaults.textFieldColors(
+                                            containerColor = Color.Transparent,
+                                            focusedTextColor = Color.White,
+                                            unfocusedTextColor = Color.White,
+                                            cursorColor = Color.White,
+                                            focusedIndicatorColor = Color.Transparent,
+                                            unfocusedIndicatorColor = Color.Transparent
+                                        ),
+                                        textStyle = LocalTextStyle.current.copy(
+                                            fontSize = 14.sp, // Match font size to placeholder
+                                            color = Color.White
+                                        )
                                     )
-                                },
-                                singleLine = true,
-                                leadingIcon = {
+                                }
+                            } else {
+                                Text(
+                                    text = "CryptoX Tracker",
+                                    color = Color.White,
+                                    fontSize = 20.sp
+                                )
+                            }
+                        },
+                        navigationIcon = {
+                            if (isSearchMode) {
+                                IconButton(onClick = {
+                                    isSearchMode = false
+                                    viewModel.updateSearchQuery("")
+                                }) {
                                     Icon(
-                                        imageVector = Icons.Default.Search,
-                                        contentDescription = "Search Icon",
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back",
                                         tint = Color.White
                                     )
-                                },
-                                modifier = Modifier
-                                    //.weight(1f)
-                                    .background(Color(0xFF424242), RoundedCornerShape(20.dp)),
-                                colors = TextFieldDefaults.textFieldColors(
-                                    containerColor = Color.Transparent,
-                                    focusedTextColor = Color.White,
-                                    unfocusedTextColor = Color.White,
-                                    cursorColor = Color.White,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent
-                                ),
-                                textStyle = LocalTextStyle.current.copy(
-                                    fontSize = 14.sp, // Match font size to placeholder
-                                    color = Color.White
-                                )
-                            )
-                        }
-                    } else {
-                        Text(text = "CryptoX Tracker", color = Color.White, fontSize = 20.sp)
-                    }
-                },
-                navigationIcon = {
-                    if (isSearchMode) {
-                        IconButton(onClick = {
-                            isSearchMode = false
-                            viewModel.updateSearchQuery("")
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                tint = Color.White
-                            )
-                        }
-                    } else
-                        IconButton(onClick = {/* TODO: Implement Onclick */ }) {
-                            Icon(
-                                imageVector = Icons.Default.Menu,  // Placeholder icon for app icon
-                                contentDescription = "App Icon",
-                                tint = Color.White
-                            )
-                        }
-                },
-                actions = {
-                    if (!isSearchMode) {
-                        IconButton(onClick = { isSearchMode = true }) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search",
-                                tint = Color.White
-                            )
-                        }
-                        IconButton(onClick = { viewModel.togglePortfolioVisibility() }) {
-                            val visibilityIcon = if (viewModel.isPortfolioVisible.value) {
-                                painterResource(id = R.drawable.eye_visible__1_) // Eye icon
-                            } else {
-                                painterResource(id = R.drawable.eye_closed__1_) // Eye-off icon
+                                }
+                            } else
+                                IconButton(onClick = {/* TODO: Implement Onclick */ }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Menu,  // Placeholder icon for app icon
+                                        contentDescription = "App Icon",
+                                        tint = Color.White
+                                    )
+                                }
+                        },
+                        actions = {
+                            if (!isSearchMode) {
+                                IconButton(onClick = { isSearchMode = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = "Search",
+                                        tint = Color.White
+                                    )
+                                }
+                                IconButton(onClick = { viewModel.togglePortfolioVisibility() }) {
+                                    val visibilityIcon = if (viewModel.isPortfolioVisible.value) {
+                                        painterResource(id = R.drawable.eye_visible__1_) // Eye icon
+                                    } else {
+                                        painterResource(id = R.drawable.eye_closed__1_) // Eye-off icon
+                                    }
+                                    Icon(
+                                        visibilityIcon,
+                                        contentDescription = "Toggle Visibility",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
                             }
-                            Icon(visibilityIcon, contentDescription = "Toggle Visibility", tint = Color.White, modifier = Modifier.size(24.dp))
-                        }
-                    }
-                    IconButton(onClick = {
-                        editMode = !editMode
-                        if (!editMode) {
-                            // Save changes and exit edit mode
-                            viewModel.updateCoinDetails(editableCoinQuantityList)
-                        }
-                    }) {
-                        Icon(
-                            imageVector = if (editMode) Icons.Default.Done else Icons.Default.Edit,
-                            contentDescription = if (editMode) "Save Changes" else "Edit",
-                            tint = Color.White
+                            IconButton(onClick = {
+                                editMode = !editMode
+                                if (!editMode) {
+                                    // Save changes and exit edit mode
+                                    viewModel.updateCoinDetails(editableCoinQuantityList)
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = if (editMode) Icons.Default.Done else Icons.Default.Edit,
+                                    contentDescription = if (editMode) "Save Changes" else "Edit",
+                                    tint = Color.White
+                                )
+                            }
+                        },
+                    )
+                }
+            ) { paddingValues ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+
+
+                    val data = filteredCoins.getOrNull()
+                    if (!data.isNullOrEmpty()) {
+
+                        val totalHoldings = data.sumOf { crypto ->
+                            val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
+                            crypto.currentPrice * quantity
+                        } ?: 0.0
+                        Log.e("UI", "$editableCoinQuantityList")
+                        val cryptoWithPercentageList = data.map { crypto ->
+                            val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
+                            val cryptoHoldingValue = crypto.currentPrice * quantity
+                            val percentage = if (totalHoldings > 0) {
+                                (cryptoHoldingValue / totalHoldings) * 100
+                            } else {
+                                0.0
+                            }
+                            Pair(crypto, percentage) // Create pair of crypto and percentage
+                        }.sortedByDescending { it.second } // Sort by percentage in descending order
+
+                        val totalHoldingsFormatted =
+                            formatWithCommasAndTwoDecimalPlaces(totalHoldings)
+                        HoldingsPortfolioScreen(
+                            navController,
+                            totalHoldingsFormatted,
+                            totalHoldings,
+                            4500000.09,
+                            editableCoinQuantityList,
+                            cryptoWithPercentageList,
+                            editMode,
+                            isLoading,
+                            viewModel
                         )
-                    }
-                },
-            )
-
-            val data = filteredCoins.getOrNull()
-            if (!data.isNullOrEmpty()) {
-
-                val totalHoldings = data.sumOf { crypto ->
-                    val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
-                    crypto.currentPrice * quantity
-                } ?: 0.0
-                Log.e("UI", "$editableCoinQuantityList")
-                val cryptoWithPercentageList = data.map { crypto ->
-                    val quantity = editableCoinQuantityList[crypto.id] ?: 0.0
-                    val cryptoHoldingValue = crypto.currentPrice * quantity
-                    val percentage = if (totalHoldings > 0) {
-                        (cryptoHoldingValue / totalHoldings) * 100
                     } else {
-                        0.0
+                        ErrorScreen()
                     }
-                    Pair(crypto, percentage) // Create pair of crypto and percentage
-                }.sortedByDescending { it.second } // Sort by percentage in descending order
-
-                val totalHoldingsFormatted = formatWithCommasAndTwoDecimalPlaces(totalHoldings)
-                HoldingsPortfolioScreen(
-                    navController,
-                    totalHoldingsFormatted,
-                    totalHoldings,
-                    4500000.09,
-                    editableCoinQuantityList,
-                    cryptoWithPercentageList,
-                    editMode,
-                    isLoading,
-                    viewModel
-                )
-            } else {
-                ErrorScreen()
+                }
             }
         } else if (filteredCoins.isFailure) {
             val error = filteredCoins.exceptionOrNull()?.message ?: "Unknown error"
@@ -278,7 +305,7 @@ fun HoldingsPortfolioScreen(
     editableCoinDetails: MutableMap<String, Double>,
     cryptoList: List<Pair<CryptoCurrency, Double>>,
     editMode: Boolean,
-    isLoading : Boolean,
+    isLoading: Boolean,
     viewModel: CryptoScreenViewModel
 ) {
     Column(
@@ -363,7 +390,7 @@ fun PortfolioItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                //navController.navigate(Routes.detailScreen)
+                navController.navigate(Routes.detailScreen)
             }
             .background(Color(0xFF1E1E1E), RoundedCornerShape(6.dp))
             .padding(4.dp),
@@ -418,7 +445,7 @@ fun PortfolioItemRow(
                             color = Color.White
                         ),
                         singleLine = true,
-                        )
+                    )
                 } else {
                     Text(
                         text = "$displayCryptoQuantity",
