@@ -22,9 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.cryptoxtracker.model.CryptoCurrency
+import com.example.cryptoxtracker.model.SerializationUtil
 import com.example.cryptoxtracker.repository.DataStoreManager
 import com.example.cryptoxtracker.ui.theme.MyAppTheme
 import com.example.cryptoxtracker.view.CoinDetailsScreen
@@ -46,8 +50,58 @@ class MainActivity : ComponentActivity() {
                         composable(Routes.homeScreen) {
                             CryptoPortfolioScreen(navController, CryptoScreenViewModel(DataStoreManager(applicationContext)))//, CryptoValues.cryptoQuantitiesMapFake)
                         }
-                        composable (Routes.detailScreen){
-                            CoinDetailsScreen(navController)
+                        composable (
+                            route  =Routes.detailScreen,
+                            arguments = listOf(
+                                navArgument("cryptoImg") { type = NavType.StringType },
+                                navArgument("cryptoName") { type = NavType.StringType },
+                                navArgument("cryptoSymbol") { type = NavType.StringType },
+                                navArgument("price24h") { type = NavType.FloatType },
+                                navArgument("priceChange24h") { type = NavType.FloatType },
+                                navArgument("currentPrice") { type = NavType.FloatType },
+                                navArgument("quantity") { type = NavType.FloatType },
+                                navArgument("percentage") { type = NavType.FloatType },
+                                navArgument("cryptoHoldingValue") { type = NavType.FloatType }
+                            )
+                            ){
+                                backStackEntry ->
+                            val cryptoImg = backStackEntry.arguments?.getString("cryptoImg")
+                            val cryptoName = backStackEntry.arguments?.getString("cryptoName")
+                            val cryptoSymbol = backStackEntry.arguments?.getString("cryptoSymbol")
+                            val price24h = backStackEntry.arguments?.getFloat("price24h")?.toDouble()
+                            val priceChange24h = backStackEntry.arguments?.getFloat("priceChange24h")?.toDouble()
+                            val currentPrice = backStackEntry.arguments?.getFloat("currentPrice")?.toDouble()
+                            val quantity = backStackEntry.arguments?.getFloat("quantity")?.toDouble()
+                            val percentage = backStackEntry.arguments?.getFloat("percentage")?.toDouble()
+                            val cryptoHoldingValue = backStackEntry.arguments?.getFloat("cryptoHoldingValue")?.toDouble()
+
+                            if (
+                                cryptoImg != null &&
+                                cryptoName != null &&
+                                cryptoSymbol != null &&
+                                price24h != null &&
+                                priceChange24h != null &&
+                                currentPrice != null &&
+                                quantity != null &&
+                                percentage != null &&
+                                cryptoHoldingValue != null
+                            ) {
+                                CoinDetailsScreen(
+                                    navController = navController,
+                                    cryptoImg = cryptoImg,
+                                    cryptoName = cryptoName,
+                                    cryptoSymbol = cryptoSymbol,
+                                    price24h = price24h,
+                                    priceChange24h = priceChange24h,
+                                    currentPrice = currentPrice,
+                                    quantity = quantity,
+                                    percentage = percentage,
+                                    cryptoHoldingValue = cryptoHoldingValue
+                                )
+                            } else {
+                                // Handle the error case (e.g., show an error screen or a fallback UI)
+                                Text("Internal Error has occured, please retry")
+                            }
                             //CoinDetailsScreen(CoinDetailsViewModel())
                         }
                     })

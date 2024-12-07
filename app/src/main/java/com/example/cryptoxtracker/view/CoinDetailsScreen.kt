@@ -1,7 +1,9 @@
 package com.example.cryptoxtracker.view
 
+import android.health.connect.datatypes.units.Percentage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -39,28 +42,40 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.cryptoxtracker.R
 import com.example.cryptoxtracker.model.CoinDetailsUiState
+import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.model.Transaction
 import com.example.cryptoxtracker.model.TransactionType
 import com.example.cryptoxtracker.viewmodel.CoinDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoinDetailsScreen(navController: NavController) {
+fun CoinDetailsScreen(navController: NavController, cryptoImg : String, cryptoName : String, cryptoSymbol : String, price24h : Double, priceChange24h : Double, currentPrice : Double, quantity : Double, percentage: Double, cryptoHoldingValue: Double) {
     val scrollState = rememberScrollState()
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        AsyncImage(
+                            model = cryptoImg,
+                            contentDescription = "Coin Logo",
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, Color.Gray, CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
                         Image(
                             painter = painterResource(id = R.drawable.cryptox_app_icon),
                             contentDescription = "BNB Icon",

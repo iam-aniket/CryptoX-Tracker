@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import androidx.lifecycle.viewModelScope
 import com.example.cryptoxtracker.model.CryptoValues
 import com.example.cryptoxtracker.repository.DataStoreManager
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -30,9 +31,21 @@ class CryptoScreenViewModel(private val repository1: DataStoreManager) : ViewMod
     private val _isPortfolioVisible = mutableStateOf(true)
     val isPortfolioVisible: State<Boolean> = _isPortfolioVisible
 
+    private val _showAnimation = MutableStateFlow(false)
+    val showAnimation = _showAnimation.asStateFlow()
+
     fun togglePortfolioVisibility() {
         _isPortfolioVisible.value = !_isPortfolioVisible.value
     }
+
+    fun triggerAnimation() {
+        viewModelScope.launch {
+            _showAnimation.update { true }
+            delay(2500) // 3 seconds
+            _showAnimation.update { false }
+        }
+    }
+
 
     private val _coinListData =
         MutableStateFlow<Result<List<CryptoCurrency>>>(Result.success(emptyList()))

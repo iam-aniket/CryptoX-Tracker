@@ -1,9 +1,11 @@
 package com.example.cryptoxtracker.view
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,21 +39,26 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -62,10 +69,16 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.cryptoxtracker.R
 import com.example.cryptoxtracker.Routes
 import com.example.cryptoxtracker.model.CryptoCurrency
 import com.example.cryptoxtracker.model.CryptoValues
+import com.example.cryptoxtracker.model.SerializationUtil
 import com.example.cryptoxtracker.viewmodel.CryptoScreenViewModel
 import java.text.DecimalFormat
 
@@ -98,6 +111,9 @@ fun CryptoPortfolioScreen(
 
     // State to toggle search mode
     var isSearchMode by remember { mutableStateOf(false) }
+
+    // State to toggle animation visibility
+    val showAnimation by viewModel.showAnimation.collectAsState()
 
     if (isLoading) {
         Box(
@@ -234,6 +250,36 @@ fun CryptoPortfolioScreen(
                         .padding(paddingValues)
                 ) {
 
+                    if (showAnimation) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.voilaanimation))
+                            val progress by animateLottieCompositionAsState(
+                                composition = composition,
+                                iterations = LottieConstants.IterateForever
+                            )
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text(
+                                    text = "Voila!\n Happy Holding \uD83D\uDD25!!!",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    textAlign = TextAlign.Center
+                                )
+                                LottieAnimation(
+                                    composition = composition,
+                                    progress = { progress },
+                                    modifier = Modifier.size(400.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+                        }
+                    }
 
                     val data = filteredCoins.getOrNull()
                     if (!data.isNullOrEmpty()) {
@@ -321,7 +367,7 @@ fun HoldingsPortfolioScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                PortfolioCardCdcx(totalHoldings, totalHoldingDouble, investedValue)
+                PortfolioCardCdcx(totalHoldings, totalHoldingDouble, investedValue, viewModel)
                 Spacer(modifier = Modifier.height(8.dp))
                 TableHeader()
             }
@@ -385,12 +431,15 @@ fun PortfolioItemRow(
     } else {
         "**"
     }
-
+    //val cryptoJson = SerializationUtil.toJson(crypto.image, CryptoCurrency::class.java)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                navController.navigate(Routes.detailScreen)
+                val route = "detail_screen/${Uri.encode(crypto.image)}/${Uri.encode(crypto.name)}/${Uri.encode(crypto.symbol)}/" +
+                        "${crypto.priceChange24h}/${crypto.priceChangePercentage24h}/${crypto.currentPrice}/$initialValue/$percentage/$cryptoHoldingValue"
+               Log.d("Navigation", "Generated route: $route")
+                navController.navigate(route)
             }
             .background(Color(0xFF1E1E1E), RoundedCornerShape(6.dp))
             .padding(4.dp),
@@ -509,7 +558,7 @@ fun PortfolioItemRow(
 }
 
 @Composable
-fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, investedValue: Double) {
+fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, investedValue: Double, viewModel: CryptoScreenViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -592,7 +641,7 @@ fun PortfolioCardCdcx(portfolioValue: String, totalHoldingDouble: Double, invest
                 .padding(top = 10.dp, bottom = 10.dp)
         ) {
             Button(
-                onClick = { /* Deposit button action */ },
+                onClick = { viewModel.triggerAnimation() },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1F1F1F)),
                 shape = RoundedCornerShape(6.dp),
 
