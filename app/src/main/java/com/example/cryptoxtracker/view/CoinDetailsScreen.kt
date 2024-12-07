@@ -47,6 +47,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -71,21 +72,22 @@ fun CoinDetailsScreen(navController: NavController, cryptoImg : String, cryptoNa
                             model = cryptoImg,
                             contentDescription = "Coin Logo",
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(24.dp)
                                 .clip(CircleShape)
                                 .border(2.dp, Color.Gray, CircleShape),
                             contentScale = ContentScale.Crop
                         )
-                        Image(
-                            painter = painterResource(id = R.drawable.cryptox_app_icon),
-                            contentDescription = "BNB Icon",
-                            modifier = Modifier.size(32.dp)
-                        )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "BNB Binance Coin",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface
+                            text = cryptoSymbol.uppercase(),
+                            fontSize = 16.sp,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = cryptoName,
+                            fontSize = 12.sp,
+                            color = Color.Gray
                         )
                     }
                 },
@@ -146,65 +148,6 @@ fun CoinDetailsScreen(navController: NavController, cryptoImg : String, cryptoNa
 
             Spacer(modifier = Modifier.height(16.dp))
             TransactionList() // Placeholder for transaction history
-        }
-    }
-}
-
-@Composable
-fun CoinDetailsHeader() {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .shadow(4.dp, shape = RoundedCornerShape(12.dp)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Current Value",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "₹4,793.92",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(text = "Invested", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "₹3,675.00", style = MaterialTheme.typography.bodyLarge)
-                }
-                Column {
-                    Text(text = "Returns (%)", style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        text = "₹1,118.92 (30.45%)",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color(0xFF4CAF50) // Green color
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(text = "Avg. Buying Price", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "₹49,000.00", style = MaterialTheme.typography.bodyLarge)
-                }
-                Column {
-                    Text(text = "Last Traded Price", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "₹63,918.97", style = MaterialTheme.typography.bodyLarge)
-                }
-            }
         }
     }
 }
@@ -313,38 +256,6 @@ fun TransactionItem2(type: String, date: String, amount: String, status: String)
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-    }
-}
-
-@Composable
-fun TransactionItem(type: String, date: String, amount: String, status: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Icon(
-            imageVector = Icons.Default.ArrowDropDown,
-            contentDescription = null,
-            tint = Color(0xFF4CAF50), // Green
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = type, style = MaterialTheme.typography.bodyMedium)
-            Text(
-                text = date,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        Text(text = amount, style = MaterialTheme.typography.bodyMedium)
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = status,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 
