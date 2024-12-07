@@ -164,7 +164,7 @@ fun CoinDetailsScreen(
 
 
             Spacer(modifier = Modifier.height(16.dp))
-            TransactionList() // Placeholder for transaction history
+            TransactionList(cryptoSymbol.uppercase())
         }
     }
 }
@@ -260,44 +260,66 @@ fun TotalQuantityCard(totalHoldingDouble: Double, investedValue: Double, quantit
 }
 
 @Composable
-fun TransactionList() {
+fun TransactionList(cryptoSymbol: String) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
             text = "Transactions",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
-        TransactionItem2(
+        TransactionItem(
             type = "Sell",
-            date = "03 Aug 2024, 4:04 AM",
-            amount = "0.061 BNB",
+            date = "16 Sep 2024, 6:04 PM",
+            amount = "0.44 $cryptoSymbol",
             status = "Completed"
         )
-        TransactionItem2(
-            type = "Buy",
-            date = "03 Aug 2024, 4:03 AM",
-            amount = "0.071 BNB",
-            status = "Completed"
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionItem(
+            type = "Interest from Earn",
+            date = "09 Aug 2024, 1:33 AM",
+            amount = "0.032 $cryptoSymbol",
+            status = "Credited"
         )
-        TransactionItem2(
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionItem(
             type = "Sell",
-            date = "03 Aug 2024, 4:02 AM",
-            amount = "0.001 BNB",
+            date = "09 Aug 2024, 7:02 AM",
+            amount = "0.001 $cryptoSymbol",
             status = "Completed"
         )
-        TransactionItem2(
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionItem(
             type = "Buy",
-            date = "03 Aug 2024, 4:01 AM",
-            amount = "0.001 BNB",
+            date = "29 Jul 2024, 10:12 AM",
+            amount = "0.009 $cryptoSymbol",
             status = "Completed"
         )
-
-        // Add more transactions as required
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionItem(
+            type = "Buy",
+            date = "22 Jul 2024, 4:34 PM",
+            amount = "1.4 $cryptoSymbol",
+            status = "Completed"
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionItem(
+            type = "Sell",
+            date = "22 Jul 2024, 11:43 AM",
+            amount = "0.001 $cryptoSymbol",
+            status = "Completed"
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        TransactionItem(
+            type = "Buy",
+            date = "20 Jul 2024, 11:35 AM",
+            amount = "0.001 $cryptoSymbol",
+            status = "Completed"
+        )
     }
 }
 
 @Composable
-fun TransactionItem2(type: String, date: String, amount: String, status: String) {
+fun TransactionItem(type: String, date: String, amount: String, status: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -311,27 +333,24 @@ fun TransactionItem2(type: String, date: String, amount: String, status: String)
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
             Icon(
-                imageVector = if (type == "Sell") Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
+                imageVector = if (type == "Sell") Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                tint = if (type == "Buy") Color(0xFF4CAF50) else Color.Red,
+                tint = if (type != "Sell") Color(0xFF4CAF50) else Color.Red,
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = type, style = MaterialTheme.typography.bodyMedium)
+                Text(text = type, color = Color.White, fontSize = 14.sp)
                 Text(
                     text = date,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = Color.Gray,
+                    fontSize = 12.sp
                 )
             }
-            Text(text = amount, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = status,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Column(horizontalAlignment = Alignment.End) {
+                Text(text = amount, color = Color.White, fontSize = 14.sp)
+                Text(text = status.uppercase(), color = Color.Gray, fontSize = 12.sp)
+            }
         }
     }
 }
@@ -456,184 +475,5 @@ fun CoinDetailsHeader(totalHoldingDouble: Double, investedValue: Double, current
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CoinDetailsScreen(viewModel: CoinDetailsViewModel) {
-    val uiState by viewModel.uiState.collectAsState()
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        IconButton(onClick = { /* Handle Back Navigation */ }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                        Image(
-                            painter = painterResource(id = R.drawable.cryptox_app_icon), // Replace with actual coin image
-                            contentDescription = "Coin Icon",
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "BNB Binance Coin",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* Handle Options */ }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More Options"
-                        )
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(
-                    onClick = { /* Handle Buy Action */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(text = "Buy")
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(
-                    onClick = { /* Handle Sell Action */ },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                ) {
-                    Text(text = "Sell")
-                }
-            }
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            CoinOverviewSection(uiState)
-            CoinTransactionSection(uiState.transactions)
-        }
-    }
-}
-
-@Composable
-fun CoinOverviewSection(uiState: CoinDetailsUiState) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(text = "Current Value", style = MaterialTheme.typography.titleMedium)
-            Text(text = "₹${uiState.currentValue}", style = MaterialTheme.typography.headlineSmall)
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    Text(text = "Invested", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "₹${uiState.invested}", style = MaterialTheme.typography.bodyLarge)
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(text = "Returns (%)", style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        text = "₹${uiState.returns} (${uiState.returnPercentage}%)",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Green
-                    )
-                }
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    Text(text = "Avg. Buying Price", style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        text = "₹${uiState.avgBuyingPrice}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(text = "Last Traded Price", style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        text = "₹${uiState.lastTradedPrice}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CoinTransactionSection(transactions: List<Transaction>) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(text = "Transactions", style = MaterialTheme.typography.titleMedium)
-            transactions.forEach { transaction ->
-                TransactionItem(transaction)
-            }
-        }
-    }
-}
-
-@Composable
-fun TransactionItem(transaction: Transaction) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = if (transaction.type == TransactionType.Buy) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
-                contentDescription = transaction.type.name,
-                tint = if (transaction.type == TransactionType.Buy) Color.Green else Color.Red
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text(text = transaction.type.name, style = MaterialTheme.typography.bodyMedium)
-                Text(
-                    text = transaction.date,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray
-                )
-            }
-        }
-        Text(
-            text = "${transaction.amount} ${transaction.coin}",
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }

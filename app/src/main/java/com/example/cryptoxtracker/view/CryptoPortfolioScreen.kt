@@ -103,7 +103,7 @@ fun CryptoPortfolioScreen(
     navController: NavController,
     viewModel: CryptoScreenViewModel = viewModel(),
 ) {
-    val coinQuantityList by viewModel.coinQuantityList.collectAsState(initial = CryptoValues.cryptoQuantitiesMap)
+    val coinQuantityList by viewModel.coinQuantityList.collectAsState(initial = CryptoValues.cryptoQuantitiesMapFake)
     val editableCoinQuantityList =
         remember(coinQuantityList) { coinQuantityList.toMutableMap() } // Initialize properly
     var editMode by remember { mutableStateOf(false) }
@@ -164,7 +164,7 @@ fun CryptoPortfolioScreen(
                                             //.weight(1f)
                                             .background(
                                                 Color(0xFF424242),
-                                                RoundedCornerShape(20.dp)
+                                                RoundedCornerShape(14.dp)
                                             ),
                                         colors = TextFieldDefaults.textFieldColors(
                                             containerColor = Color.Transparent,

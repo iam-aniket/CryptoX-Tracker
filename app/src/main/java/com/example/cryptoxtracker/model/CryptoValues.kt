@@ -30,7 +30,11 @@ object CryptoValues {
         "1inch" to 26.0,
         "harmony" to 27.0,
         "jupiter-exchange-solana" to 28.0,
-        "cats" to 29.0
+        "cats" to 29.0,
+        "kaspa" to 1276.0,
+        "ondo-finance" to 1000.0,
+        "we-love-t" to 61.5029,
+        "gigachad-2" to 452.687
     )
     val cryptoQuantitiesMap: MutableMap<String, Double> = mutableMapOf(
         "bitcoin" to 0.00984725,

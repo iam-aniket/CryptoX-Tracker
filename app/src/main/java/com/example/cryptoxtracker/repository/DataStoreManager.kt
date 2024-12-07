@@ -35,7 +35,7 @@ class DataStoreManager(private val context: Context) {
                 }
                 // If no data in DataStore, return default values
                 if (coinMap.isEmpty()) {
-                    CryptoValues.cryptoQuantitiesMap
+                    CryptoValues.cryptoQuantitiesMapFake
                 } else {
                     coinMap
                 }
