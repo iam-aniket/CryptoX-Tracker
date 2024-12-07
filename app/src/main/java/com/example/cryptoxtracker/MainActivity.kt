@@ -43,15 +43,20 @@ class MainActivity : ComponentActivity() {
         //enableEdgeToEdge()
         setContent {
             MyAppTheme {
-                Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)) {
                     val navController = rememberNavController()
 
-                    NavHost(navController,Routes.homeScreen, builder = {
+                    NavHost(navController, Routes.homeScreen, builder = {
                         composable(Routes.homeScreen) {
-                            CryptoPortfolioScreen(navController, CryptoScreenViewModel(DataStoreManager(applicationContext)))//, CryptoValues.cryptoQuantitiesMapFake)
+                            CryptoPortfolioScreen(
+                                navController,
+                                CryptoScreenViewModel(DataStoreManager(applicationContext))
+                            )//, CryptoValues.cryptoQuantitiesMapFake)
                         }
-                        composable (
-                            route  =Routes.detailScreen,
+                        composable(
+                            route = Routes.detailScreen,
                             arguments = listOf(
                                 navArgument("cryptoImg") { type = NavType.StringType },
                                 navArgument("cryptoName") { type = NavType.StringType },
@@ -61,19 +66,27 @@ class MainActivity : ComponentActivity() {
                                 navArgument("currentPrice") { type = NavType.FloatType },
                                 navArgument("quantity") { type = NavType.FloatType },
                                 navArgument("percentage") { type = NavType.FloatType },
-                                navArgument("cryptoHoldingValue") { type = NavType.FloatType }
+                                navArgument("cryptoHoldingValue") { type = NavType.FloatType },
+                                navArgument("id") { type = NavType.IntType }
                             )
-                            ){
-                                backStackEntry ->
+                        ) { backStackEntry ->
                             val cryptoImg = backStackEntry.arguments?.getString("cryptoImg")
                             val cryptoName = backStackEntry.arguments?.getString("cryptoName")
                             val cryptoSymbol = backStackEntry.arguments?.getString("cryptoSymbol")
-                            val price24h = backStackEntry.arguments?.getFloat("price24h")?.toDouble()
-                            val priceChange24h = backStackEntry.arguments?.getFloat("priceChange24h")?.toDouble()
-                            val currentPrice = backStackEntry.arguments?.getFloat("currentPrice")?.toDouble()
-                            val quantity = backStackEntry.arguments?.getFloat("quantity")?.toDouble()
-                            val percentage = backStackEntry.arguments?.getFloat("percentage")?.toDouble()
-                            val cryptoHoldingValue = backStackEntry.arguments?.getFloat("cryptoHoldingValue")?.toDouble()
+                            val price24h =
+                                backStackEntry.arguments?.getFloat("price24h")?.toDouble()
+                            val priceChange24h =
+                                backStackEntry.arguments?.getFloat("priceChange24h")?.toDouble()
+                            val currentPrice =
+                                backStackEntry.arguments?.getFloat("currentPrice")?.toDouble()
+                            val quantity =
+                                backStackEntry.arguments?.getFloat("quantity")?.toDouble()
+                            val percentage =
+                                backStackEntry.arguments?.getFloat("percentage")?.toDouble()
+                            val cryptoHoldingValue =
+                                backStackEntry.arguments?.getFloat("cryptoHoldingValue")?.toDouble()
+                            val id =
+                                backStackEntry.arguments?.getInt("id")
 
                             if (
                                 cryptoImg != null &&
@@ -84,7 +97,8 @@ class MainActivity : ComponentActivity() {
                                 currentPrice != null &&
                                 quantity != null &&
                                 percentage != null &&
-                                cryptoHoldingValue != null
+                                cryptoHoldingValue != null &&
+                                id != null
                             ) {
                                 CoinDetailsScreen(
                                     navController = navController,
@@ -96,7 +110,8 @@ class MainActivity : ComponentActivity() {
                                     currentPrice = currentPrice,
                                     quantity = quantity,
                                     percentage = percentage,
-                                    cryptoHoldingValue = cryptoHoldingValue
+                                    cryptoHoldingValue = cryptoHoldingValue,
+                                    id = id
                                 )
                             } else {
                                 // Handle the error case (e.g., show an error screen or a fallback UI)

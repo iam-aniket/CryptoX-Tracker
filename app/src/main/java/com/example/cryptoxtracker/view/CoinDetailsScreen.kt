@@ -61,7 +61,19 @@ import com.example.cryptoxtracker.viewmodel.CoinDetailsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoinDetailsScreen(navController: NavController, cryptoImg : String, cryptoName : String, cryptoSymbol : String, price24h : Double, priceChange24h : Double, currentPrice : Double, quantity : Double, percentage: Double, cryptoHoldingValue: Double) {
+fun CoinDetailsScreen(
+    navController: NavController,
+    cryptoImg: String,
+    cryptoName: String,
+    cryptoSymbol: String,
+    price24h: Double,
+    priceChange24h: Double,
+    currentPrice: Double,
+    quantity: Double,
+    percentage: Double,
+    cryptoHoldingValue: Double,
+    id : Int
+) {
     val scrollState = rememberScrollState()
     Scaffold(
         topBar = {
@@ -138,13 +150,18 @@ fun CoinDetailsScreen(navController: NavController, cryptoImg : String, cryptoNa
                 .background(MaterialTheme.colorScheme.background)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            PortfolioCardCdcx2("45,793.92", 43456.9, 7890.89)
+
+            //49 random numbers - assign based on position
+            val arr = intArrayOf(8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15)
+            val investedValue = (cryptoHoldingValue - cryptoHoldingValue / arr[id])
+
+            CoinDetailsHeader(cryptoHoldingValue, investedValue)
 
             //CoinDetailsHeader()
             Spacer(modifier = Modifier.height(16.dp))
-            PortfolioCardCdcx2("45,793.92", 43456.9, 7890.89)
+            TotalQuantityCard(cryptoHoldingValue, investedValue, quantity, cryptoSymbol)
+            //PortfolioCardCdcx2(43456.9, 7890.89)
 
-            //TotalQuantityCard()
 
             Spacer(modifier = Modifier.height(16.dp))
             TransactionList() // Placeholder for transaction history
@@ -153,31 +170,93 @@ fun CoinDetailsScreen(navController: NavController, cryptoImg : String, cryptoNa
 }
 
 @Composable
-fun TotalQuantityCard() {
+fun TotalQuantityCard(totalHoldingDouble: Double, investedValue: Double, quantity: Double, cryptoSymbol: String) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .shadow(4.dp, shape = RoundedCornerShape(12.dp)),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(6.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF292929)) // Dark grey background
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
             Text(
                 text = "Total Quantity",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color.Gray,
+                fontSize = 14.sp
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "0.075 BNB",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+
+            val currentValue = formatWithCommasAndTwoDecimalPlaces(totalHoldingDouble)
+            Row {
+                Text(
+                    text = formatWithSixDecimalPlaces(quantity), // Portfolio Value
+                    color = Color.White,
+                    fontSize = 16.sp,
+                )
+                Spacer(Modifier.width(4.dp))
+                Text(text = cryptoSymbol.uppercase(), color = Color.Gray, fontSize = 16.sp)
+            }
+
             Text(
                 text = "≈ ₹4,793.92",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            HorizontalDivider(color = Color(0xFF313131), thickness = 1.dp)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column {
+                    Text(
+                        text = "Invested",
+                        color = Color.Gray,
+                        fontSize = 12.sp
+                    )
+                    Row {
+                        Text(text = "₹", color = Color.Gray, fontSize = 14.sp)
+                        Text(
+                            text = formatWithCommasAndTwoDecimalPlaces(investedValue), // Invested Value
+                            color = Color.White,
+                            fontSize = 14.sp,
+                        )
+                    }
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = "Returns (%)",
+                        color = Color.Gray,
+                        fontSize = 12.sp
+                    )
+                    val returns = totalHoldingDouble - investedValue
+                    val returnsPercentage = (returns / investedValue) * 100
+                    val returnsColor = if (returns >= 0) Color(0xFF3db284) else Color(0xFFF44336)
+                    Row {
+                        Text(
+                            text = "₹${formatWithCommasAndTwoDecimalPlaces(returns)} ", // Returns
+                            color = returnsColor, // Green for positive returns
+                            fontSize = 14.sp,
+                        )
+                        Text(
+                            text = " (${formatWithTwoDecimalPlaces(returnsPercentage)}%)",
+                            color = returnsColor,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
         }
     }
 }
@@ -260,7 +339,7 @@ fun TransactionItem2(type: String, date: String, amount: String, status: String)
 }
 
 @Composable
-fun PortfolioCardCdcx2(currentValue: String, totalHoldingDouble: Double, investedValue: Double) {
+fun CoinDetailsHeader(totalHoldingDouble: Double, investedValue: Double) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -279,6 +358,7 @@ fun PortfolioCardCdcx2(currentValue: String, totalHoldingDouble: Double, investe
                 fontSize = 14.sp
             )
 
+            val currentValue = formatWithCommasAndTwoDecimalPlaces(totalHoldingDouble)
             Row {
                 Text(text = "₹", color = Color.Gray, fontSize = 16.sp)
                 Text(

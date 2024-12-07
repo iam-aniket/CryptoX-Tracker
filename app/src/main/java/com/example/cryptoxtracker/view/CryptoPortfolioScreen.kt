@@ -92,6 +92,11 @@ fun formatWithTwoDecimalPlaces(value: Double): String {
     return decimalFormat.format(value)
 }
 
+fun formatWithSixDecimalPlaces(value: Double): String {
+    val decimalFormat = DecimalFormat("#0.000000")
+    return decimalFormat.format(value)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CryptoPortfolioScreen(
@@ -373,10 +378,13 @@ fun HoldingsPortfolioScreen(
             }
 
 
+            var counter = 0;
             items(cryptoList) { (crypto, percentage) ->
+
                 val qtity = editableCoinDetails[crypto.id] ?: 0.0
                 val cryptoHoldingValue = crypto.currentPrice * qtity
                 PortfolioItemRow(
+                    id = counter,
                     navController = navController,
                     crypto = crypto,
                     percentage = percentage,
@@ -388,6 +396,7 @@ fun HoldingsPortfolioScreen(
                     editMode,
                     viewModel
                 )
+                counter++
             }
         }
     }
@@ -415,6 +424,7 @@ fun TableHeader() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PortfolioItemRow(
+    id : Int,
     navController: NavController,
     crypto: CryptoCurrency,
     percentage: Double,
@@ -437,7 +447,7 @@ fun PortfolioItemRow(
             .fillMaxWidth()
             .clickable {
                 val route = "detail_screen/${Uri.encode(crypto.image)}/${Uri.encode(crypto.name)}/${Uri.encode(crypto.symbol)}/" +
-                        "${crypto.priceChange24h}/${crypto.priceChangePercentage24h}/${crypto.currentPrice}/$initialValue/$percentage/$cryptoHoldingValue"
+                        "${crypto.priceChange24h}/${crypto.priceChangePercentage24h}/${crypto.currentPrice}/$initialValue/$percentage/$cryptoHoldingValue/$id"
                Log.d("Navigation", "Generated route: $route")
                 navController.navigate(route)
             }
