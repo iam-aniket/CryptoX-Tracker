@@ -155,7 +155,7 @@ fun CoinDetailsScreen(
             val arr = intArrayOf(8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15, 8, 11, 3, 17, 7, 26, 15)
             val investedValue = (cryptoHoldingValue - cryptoHoldingValue / arr[id])
 
-            CoinDetailsHeader(cryptoHoldingValue, investedValue)
+            CoinDetailsHeader(cryptoHoldingValue, investedValue, currentPrice)
 
             //CoinDetailsHeader()
             Spacer(modifier = Modifier.height(16.dp))
@@ -201,9 +201,9 @@ fun TotalQuantityCard(totalHoldingDouble: Double, investedValue: Double, quantit
             }
 
             Text(
-                text = "≈ ₹4,793.92",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "≈ ₹ $currentValue",
+                color = Color.Gray,
+                fontSize = 12.sp
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -218,45 +218,43 @@ fun TotalQuantityCard(totalHoldingDouble: Double, investedValue: Double, quantit
             ) {
                 Column {
                     Text(
-                        text = "Invested",
+                        text = "Available",
                         color = Color.Gray,
                         fontSize = 12.sp
                     )
                     Row {
-                        Text(text = "₹", color = Color.Gray, fontSize = 14.sp)
                         Text(
-                            text = formatWithCommasAndTwoDecimalPlaces(investedValue), // Invested Value
+                            text = formatWithSixDecimalPlaces(0.00), // Portfolio Value
                             color = Color.White,
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                         )
+                        Spacer(Modifier.width(4.dp))
+                        Text(text = cryptoSymbol.uppercase(), color = Color.Gray, fontSize = 12.sp)
                     }
+
+                    Text(text = "≈ ₹ ${formatWithCommasAndTwoDecimalPlaces(2.07)}", color = Color.Gray, fontSize = 12.sp)
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = "Returns (%)",
+                        text = "Locked",
                         color = Color.Gray,
                         fontSize = 12.sp
                     )
-                    val returns = totalHoldingDouble - investedValue
-                    val returnsPercentage = (returns / investedValue) * 100
-                    val returnsColor = if (returns >= 0) Color(0xFF3db284) else Color(0xFFF44336)
                     Row {
                         Text(
-                            text = "₹${formatWithCommasAndTwoDecimalPlaces(returns)} ", // Returns
-                            color = returnsColor, // Green for positive returns
-                            fontSize = 14.sp,
+                            text = formatWithSixDecimalPlaces(quantity), // Portfolio Value
+                            color = Color.White,
+                            fontSize = 12.sp,
                         )
-                        Text(
-                            text = " (${formatWithTwoDecimalPlaces(returnsPercentage)}%)",
-                            color = returnsColor,
-                            fontSize = 12.sp
-                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(text = cryptoSymbol.uppercase(), color = Color.Gray, fontSize = 12.sp)
                     }
+
+                    Text(text = "≈ ₹ $currentValue", color = Color.Gray, fontSize = 12.sp)
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
-
         }
     }
 }
@@ -339,7 +337,7 @@ fun TransactionItem2(type: String, date: String, amount: String, status: String)
 }
 
 @Composable
-fun CoinDetailsHeader(totalHoldingDouble: Double, investedValue: Double) {
+fun CoinDetailsHeader(totalHoldingDouble: Double, investedValue: Double, currentPrice: Double) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -435,7 +433,7 @@ fun CoinDetailsHeader(totalHoldingDouble: Double, investedValue: Double) {
                     Row {
                         Text(text = "₹", color = Color.Gray, fontSize = 14.sp)
                         Text(
-                            text = formatWithCommasAndTwoDecimalPlaces(investedValue), // Invested Value
+                            text = formatWithCommasAndTwoDecimalPlaces(currentPrice/1.5), // Invested Value
                             color = Color.White,
                             fontSize = 14.sp,
                         )
@@ -450,7 +448,7 @@ fun CoinDetailsHeader(totalHoldingDouble: Double, investedValue: Double) {
                     Row {
                         Text(text = "₹", color = Color.Gray, fontSize = 14.sp)
                         Text(
-                            text = formatWithCommasAndTwoDecimalPlaces(investedValue), // Invested Value
+                            text = formatWithCommasAndTwoDecimalPlaces(currentPrice), // Invested Value
                             color = Color.White,
                             fontSize = 14.sp,
                         )
