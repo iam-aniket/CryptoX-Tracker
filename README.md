@@ -125,7 +125,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 For questions or feedback, feel free to reach out:
 
 - **Email**: aniketwf@example.com
-- **GitHub**: [your-username](https://github.com/iam-aniket)
+- **GitHub**: [iam-aniket](https://github.com/iam-aniket)
 
 ---
 
