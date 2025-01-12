@@ -124,8 +124,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 For questions or feedback, feel free to reach out:
 
-- **Email**: aniketwf@example.com
-- **GitHub**: [iam-aniket](https://github.com/iam-aniket)
+- **Email**: aniketwf@gmail.com
+- **Linkedin**: [aniket](https://www.linkedin.com/in/aniketaniket/)
 
 ---
 
