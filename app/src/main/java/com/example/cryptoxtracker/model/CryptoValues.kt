@@ -37,10 +37,10 @@ object CryptoValues {
         "gigachad-2" to 452.687
     )
     val cryptoQuantitiesMap: MutableMap<String, Double> = mutableMapOf(
-        "bitcoin" to 0.00984725,
-        "aptos" to 28.60887453,
+        "bitcoin" to 0.00972925,
+        "aptos" to 38.54187453,
         "avalanche-2" to 6.083513,
-        "arbitrum" to 175.660088,
+        "arbitrum" to 227.660088,
         "dogecoin" to 651.897035,
         "polygon-ecosystem-token" to 161.629983,
         "polkadot" to 10.05493,
@@ -48,7 +48,7 @@ object CryptoValues {
         "chainlink" to 2.657866,
         "near" to 4.016003,
         "pepe" to 6970083.387,
-        "tether" to 854.539689,
+        "tether" to 569.9652936,
         "floki" to 25330.35481,
         "dogwifcoin" to 1.000954,
         "book-of-meme" to 221.160341,
@@ -57,20 +57,26 @@ object CryptoValues {
         "1inch" to 2.005954,
         "binancecoin" to 0.50836597,
         "harmony" to 22.594677,
-        "solana" to 6.032903,
+        "solana" to 7.065703,
         "bittorrent" to 263740.8691,
-        "ethereum" to 1.512242,
+        "ethereum" to 1.512722,
         "brett" to 6.461928,
         "cats-2" to 19453.28791,
         "cardano" to 29.618844,
         "cosmos" to 1.085404,
         "optimism" to 63.68,
-        "render-token" to 28.75,
+        "render-token" to 41.45,
         "jupiter-exchange-solana" to 10.0,
         "worldcoin-wld" to 59.7,
         "kaspa" to 1276.0,
-        "ondo-finance" to 100.0,
+        "ondo-finance" to 161.0,
         "we-love-t" to 61.5029,
-        "gigachad-2" to 452.687
+        "gigachad-2" to 452.687,
+
+        "sei-network" to 200.0,
+        "arkham" to 29.8,
+        "io" to 14.9,
+        "celestia" to 8.6618,
+        "kucoin-shares" to 0.99368313
     )
 }
