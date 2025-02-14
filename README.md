@@ -26,7 +26,7 @@ This project is built with 💚 using **Kotlin** and **Jetpack Compose**, follow
 
 | Home Screen 🏠  | Token Details 📋  |
 |-----------------|------------------|
-| ![Home Screen](images/home_screen.png) | ![Token Details](images/token_details.png) |
+| ![Home Screen](https://github.com/iam-aniket/CryptoX-Tracker/blob/main/HomeScreen.jpg) | ![Token Details](images/token_details.png) |
 
 > More screenshots coming soon! 📷
 
