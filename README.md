@@ -10,7 +10,7 @@ Effortlessly track and manage your cryptocurrency portfolio held across multiple
 This project is built with 💚 using **Kotlin** and **Jetpack Compose**, following modern Android development best practices.
 
 <p align="center">
-<img src="https://github.com/iam-aniket/CryptoX-Tracker/blob/screenshots/CryptoX%20App%20Icon.png" width=20% height=20%>
+<img src="https://github.com/iam-aniket/CryptoX-Tracker/blob/main/app/src/main/res/drawable/cryptox_app_icon.png" width=20% height=20%>
 </p>
 
 ---
