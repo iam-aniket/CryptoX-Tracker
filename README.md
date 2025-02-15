@@ -36,7 +36,9 @@ This project is built with 💚 using **Kotlin** and **Jetpack Compose**, follow
 
 ### Walkthrough 🎥
 
-🚧 Demo video to be added soon. Stay tuned!
+🚧 Demo video added for the app flow!
+
+[![Watch the demo](https://img.youtube.com/vi/NFZ8Xw6usnY/0.jpg)](https://www.youtube.com/shorts/NFZ8Xw6usnY)
 
 ---
 
